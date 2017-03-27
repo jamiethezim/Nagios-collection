@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/Users/jamiezimmerman/anaconda/bin/python
 #Written by Jamie Zimmerman 3/27/2017
 import argparse
 import operator
