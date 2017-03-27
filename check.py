@@ -1,9 +1,11 @@
+#!/usr/bin/python
 #Written by Jamie Zimmerman 3/27/2017
 import argparse
 import operator
 import subprocess
 
 #Usage: python3 check.py -c [bash command] -o [math operator] -a [amount to operate by]
+#Example: python3 check.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
 
 def check(string, OP, amount):
 	ops = {'*': operator.mul, '/': operator.truediv}
