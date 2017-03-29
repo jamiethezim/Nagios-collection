@@ -1,14 +1,20 @@
 #!/Users/jamiezimmerman/anaconda/bin/python
+
+#TODO This shebang path MUST be changed before execution
+# 1. bash$ which python
+# 2. copy the pathname to the first line of this file with proper #!
+
+#-----------------------------------------------------------------------#
+
 #Written by Jamie Zimmerman 3/29/2017
 #Backwards compatible for Python 2.6.6 deployment on RHEL server
 
+#Usage: ./check2.py -c [bash command] -o [math operator] -a [amount to operate by]
+#Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
+
 import argparse
 import operator
-#import subprocess
 import os
-
-#Usage: ./check.py -c [bash command] -o [math operator] -a [amount to operate by]
-#Example: ./check.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
 
 def check(string, OP, amount):
 	ops = {'*': operator.mul, '/': operator.truediv}
