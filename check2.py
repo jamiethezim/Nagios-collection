@@ -19,7 +19,8 @@ import os
 def check(string, OP, amount):
 	ops = {'*': operator.mul, '/': operator.truediv}
 
-	li = os.popen(string).read().strip().split(' ') #get the string result of whatever the command specified
+	li = os.popen(string).read().strip().split(' ')
+	#os.popen() runs the bash command string, read() reads the output, strip deletes \n, split breaks the resultant string in to component words
 	for i in range(len(li)):
 		try:
 			new_value = calculate(float(li[i]), ops[OP], amount)
