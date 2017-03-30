@@ -15,12 +15,13 @@
 import argparse
 import operator
 import os
+import re
 
 def check(string, OP, amount):
 	ops = {'*': operator.mul, '/': operator.truediv}
-
-	li = os.popen(string).read().strip().split(' ')
-	#os.popen() runs the bash command string, read() reads the output, strip deletes \n, split breaks the resultant string in to component words
+	res = os.popen(string).read().strip()
+	#os.popen() runs the bash command string, read() reads the output, strip deletes \n
+	li = re.split("[= ]+", res) #splits by multiple delimiters: =, <space>
 	for i in range(len(li)):
 		try:
 			new_value = calculate(float(li[i]), ops[OP], amount)
