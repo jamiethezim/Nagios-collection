@@ -24,7 +24,7 @@ def check(string, OP, amount):
 	for i in range(len(li)):
 		try:
 			new_value = calculate(float(li[i]), ops[OP], amount)
-			li[i] = "{0:.2f}".format(new_value)
+			li[i] = "{0:.1f}".format(new_value)
 		except ValueError:
 			pass
 	return " ".join(li)
