@@ -9,6 +9,10 @@
 #Written by Jamie Zimmerman 3/29/2017
 #Backwards compatible for Python 2.6.6 deployment on RHEL server
 
+#TODO When warning signs occur in Nagios monitoring, numbers appear with asterisks ie. *80*
+#adjust code to split on asterisks too, without destroying knowledge of what number the asterisks surrounded
+
+
 #Usage: ./check2.py -c [bash command] -o [math operator] -a [amount to operate by]
 #Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
 
