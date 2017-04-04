@@ -28,6 +28,11 @@ def check(string, OP, amount):
 			li[i] = "{0:.1f}".format(new_value)
 		except ValueError:
 			pass
+	# reg ex split function destroys the equals sign critical to the string
+	# equal sign necessary on very last number only if there was a bar in the bash command
+	if '|' in string:
+		i = find(li)
+		li[i] = "=" + li[i]
 	return " ".join(li)
 
 #----------------------------------------------------------#
@@ -40,6 +45,16 @@ def calculate(inp, op, out):
 	out -> float/int
 	'''
 	return op(inp, out)
+
+#helper function finds index of last instance of a number in a list
+def find(lis):
+	for j in range(len(lis)-1, -1, -1):
+		try:
+			dummy = float(lis[j])
+			return j
+		except ValueError:
+			pass
+	return None
 
 
 #----------------------------------------------------------#
