@@ -18,14 +18,15 @@
 
 import argparse
 import operator
-import os
+import subprocess
 import re
 
 def check(string, OP, amount):
 	ops = {'*': operator.mul, '/': operator.truediv}
-	res = os.popen(string).read().strip()
-	#os.popen() runs the bash command string, read() reads the output, strip deletes \n
-	li = re.split("[= ]+", res) #splits by multiple delimiters: =, <space>
+	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
+	li = re.split("[= *]+", res) #splits by multiple delimiters: =, <space>
+	li[0] = li[0].strip("'")
+	li[-1] = li[-1].strip("'")
 	for i in range(len(li)):
 		try:
 			new_value = calculate(float(li[i]), ops[OP], amount)
@@ -36,8 +37,11 @@ def check(string, OP, amount):
 	# equal sign necessary on very last number only if there was a bar in the bash command
 	if '|' in string:
 		i = find(li)
-		li[i] = "=" + li[i]
-	return " ".join(li)
+		sub = " ".join(li[0:i])
+		sub += "=" + li[i]
+		return sub
+	else:
+		return " ".join(li)
 
 #----------------------------------------------------------#
 
@@ -74,6 +78,5 @@ if __name__ == '__main__':
 	operation = args.operation
 	amount = args.amount
 
-	#print("command is {}\noperate is {}\namount is {}".format(command, operation, amount))
 	res = check(command, operation, amount)
 	print(res)
