@@ -17,13 +17,14 @@
 #Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
 
 import argparse
-import operator
+from operator import mul, truediv
 import subprocess
 import re
 
 def check(string, OP, amount):
-	ops = {'*': operator.mul, '/': operator.truediv}
+	ops = {'*': mul, '/': truediv}
 	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
+	print(res)
 	li = re.split("[= *]+", res) #splits by multiple delimiters: =, <space>
 	li[0] = li[0].strip("'")
 	li[-1] = li[-1].strip("'")
