@@ -14,7 +14,7 @@ import subprocess
 
 def check(command):
 	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-	print(res)
+	print(res.strip())
 
 #----------------------------------------------------------#
 if __name__ == '__main__':
