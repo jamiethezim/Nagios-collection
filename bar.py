@@ -13,8 +13,8 @@ import argparse
 import subprocess
 
 def check(command):
-	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
-	print(res.strip())
+	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
+	print(res)
 
 #----------------------------------------------------------#
 if __name__ == '__main__':
