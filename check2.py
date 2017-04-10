@@ -14,32 +14,43 @@
 
 
 #Usage: ./check2.py -c [bash command] -o [math operator] -a [amount to operate by]
-#Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -a 10 -o '/'
+#Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -o '/' -a 10
 
 import argparse
 from operator import mul, truediv
 import subprocess
 import re
 
-def check(string, OP, amount):
+def check(command, OP, amount):
 	ops = {'*': mul, '/': truediv}
 	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
-	#print(res)
-	li = re.split("[= *]+", res) #splits by multiple delimiters: =, <space>
-	li[0] = li[0].strip("'")
-	li[-1] = li[-1].strip("'")
+	#command = "SNMP WARNING - oHTELRMRH2OUT *16.76*"
+	li = re.split("[= ]+", res) #splits by multiple delimiters: =, <space> 
+	destarred = False #boolean keeps track of a word having **
 	for i in range(len(li)):
 		try:
+			if li[i].startswith('*') and li[i].endswith('*'):
+				li[i] = li[i].strip('*')
+				destarred = True
+			
 			new_value = calculate(float(li[i]), ops[OP], amount)
-			li[i] = "{0:.1f}".format(new_value)
+			
+			if destarred:
+				li[i] = "*{0:.1f}*".format(new_value)
+				destarred = False
+			else:
+				li[i] = "{0:.1f}".format(new_value)
 		except ValueError:
 			pass
 	# reg ex split function destroys the equals sign critical to the string
 	# equal sign necessary on very last number only if there was a bar in the bash command
 	if '|' in string:
 		i = find(li)
-		sub = " ".join(li[0:i])
-		sub += "=" + li[i]
+		sub = " ".join(li[0:i]) #join the first section of the string
+		sub += "=" #include the lost #
+		while i < len(li):
+			sub += li[i] #add the rest of the list items
+			i += 1
 		return sub
 	else:
 		return " ".join(li)
