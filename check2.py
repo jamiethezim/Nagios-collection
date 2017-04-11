@@ -6,27 +6,27 @@
 
 #-----------------------------------------------------------------------#
 
-#Written by Jamie Zimmerman 3/29/2017
+#Written by Jamie Zimmerman 4/11/2017
 #Backwards compatible for Python 2.6.6 deployment on RHEL server
 
-#TODO When warning signs occur in Nagios monitoring, numbers appear with asterisks ie. *80*
-#adjust code to split on asterisks too, without destroying knowledge of what number the asterisks surrounded
 
-
-#Usage: ./check2.py -c [bash command] -o [math operator] -a [amount to operate by]
-#Example: ./check2.py -c 'echo SNMP - OK - -98 total power 25 KW' -o '/' -a 10
+#Usage: <bash command/script to run> | ./check2.py -o <math operator> -a <number> 
+#Example: ./check_snmp -H.... | ./check2.py -o '/' -a 10
 
 import argparse
 from operator import mul, truediv
-import subprocess
+import sys
 import re
 
 def check(command, OP, amount):
+	'''
+	command -> string, the result of the bash command which is then piped into the program
+	OP -> string, math operator, division or multiplication
+	amount -> int, amount to operate by
+	'''
 	ops = {'*': mul, '/': truediv}
-	res = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip()
-	#command = "SNMP WARNING - oHTELRMRH2OUT *16.76*"
-	li = re.split("[= ]+", res) #splits by multiple delimiters: =, <space> 
-	destarred = False #boolean keeps track of a word having **
+	li = re.split("[= ]+", command) #splits by multiple delimiters: =, <space> 
+	destarred = False #keeps track of a word having **
 	for i in range(len(li)):
 		try:
 			if li[i].startswith('*') and li[i].endswith('*'):
@@ -44,7 +44,7 @@ def check(command, OP, amount):
 			pass
 	# reg ex split function destroys the equals sign critical to the string
 	# equal sign necessary on very last number only if there was a bar in the bash command
-	if '|' in string:
+	if '|' in command:
 		i = find(li)
 		sub = " ".join(li[0:i]) #join the first section of the string
 		sub += "=" #include the lost #
@@ -56,6 +56,12 @@ def check(command, OP, amount):
 		return " ".join(li)
 
 #----------------------------------------------------------#
+
+#helper function gets the input string - i.e. the result of the bash command piped into this python program
+def get_command():
+	command = sys.stdin.read().strip()
+	return command 
+
 
 #helper function to calculate new value
 def calculate(inp, op, out):
@@ -80,13 +86,12 @@ def find(lis):
 #----------------------------------------------------------#
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='SNMP get string process')
-	parser.add_argument('-c', "--command", type=str, required=True, help='command to run')
 	parser.add_argument('-o', "--operation", type=str, required=True, help='operation to perform, ie: "/" to divide or "*" to multiply')
 	parser.add_argument('-a', "--amount", type=int, required=True, help='int(amount) to divide/multiply by')
 	
 	args = parser.parse_args()
-
-	command = args.command
+	
+	command = get_command()
 	operation = args.operation
 	amount = args.amount
 
