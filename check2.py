@@ -25,6 +25,7 @@ def check(command, OP, amount):
 	amount -> int, amount to operate by
 	'''
 	ops = {'*': mul, '/': truediv}
+	print('got command from nagios: {}'.format(command))
 	li = re.split("[= ]+", command) #splits by multiple delimiters: =, <space> 
 	destarred = False #keeps track of a word having **
 	for i in range(len(li)):
